@@ -20,6 +20,7 @@ public class handler {
 
 	public static void main(String[] args) throws IOException, NumberFormatException, InterruptedException 
 	{
+		long programStartTime = (System.currentTimeMillis() / 1000);
 		int count = args.length;
 		
 		boolean genToken = false;
@@ -81,12 +82,12 @@ public class handler {
 			File outFile = new File(args[1]);
 			FileWriter fileWriter = new FileWriter(outFile);			
 			
-			String results = "TOTAL_START=" + solver.getStartTime() + "\n" +
+			String results = "TOTAL_START=" + 0 + "\n" +
 					 "PREPROCESSING_START=" + 0 + "\n" +
 					 "PREPROCESSING_DONE=" + 0 + "\n" +
-					 "SEARCH_START=" + solver.getStartTime() + "\n" +
-					 "SEARCH_DONE=" + solver.getEndTime() + "\n" +
-					 "SOLUTION_TIME=" + ((0 - 0) + (solver.getEndTime() - solver.getStartTime())) + "\n" + // Need to add in preprocessor times
+					 "SEARCH_START=" + (solver.getStartTime() / 1000 - programStartTime) + "\n" +
+					 "SEARCH_DONE=" + (solver.getEndTime() / 1000 - programStartTime) + "\n" +
+					 "SOLUTION_TIME=" + (((0 - 0) + (solver.getEndTime() - solver.getStartTime())) / 1000) + "\n" + // Need to add in preprocessor times
 					 "STATUS=" + (solver.hasSolution() ? "success" : "timeout") + "\n" +
 					 "SOLUTION=" + (solver.hasSolution() ? sf.getSolutionTuple() : sf.getEmptyTuple()) + "\n" +
 					 "COUNT_NODES=" + solver.getNumAssignments() + "\n" +
