@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 //import java.io.IOException;
 import java.io.Reader;
+import java.text.DecimalFormat;
 
 import cspSolver.BTSolver;
 import cspSolver.BTSolver.ConsistencyCheck;
@@ -80,21 +81,23 @@ public class handler {
 			sf = solver.getSolution();
 			
 			File outFile = new File(args[1]);
-			FileWriter fileWriter = new FileWriter(outFile);			
+			FileWriter fileWriter = new FileWriter(outFile);	
 			
-			String results = "TOTAL_START=" + 0 + "\n" +
-					 "PREPROCESSING_START=" + 0 + "\n" +
-					 "PREPROCESSING_DONE=" + 0 + "\n" +
-					 "SEARCH_START=" + (solver.getStartTime() / 1000 - programStartTime) + "\n" +
-					 "SEARCH_DONE=" + (solver.getEndTime() / 1000 - programStartTime) + "\n" +
-					 "SOLUTION_TIME=" + (((0 - 0) + (solver.getEndTime() - solver.getStartTime())) / 1000) + "\n" + // Need to add in preprocessor times
-					 "STATUS=" + (solver.hasSolution() ? "success" : "timeout") + "\n" +
-					 "SOLUTION=" + (solver.hasSolution() ? sf.getSolutionTuple() : sf.getEmptyTuple()) + "\n" +
-					 "COUNT_NODES=" + solver.getNumAssignments() + "\n" +
-					 "COUNT_DEADENDS=" + solver.getNumBacktracks() + "\n";		
+			DecimalFormat df = new DecimalFormat("#.00"); 
+			String results = "==============================\n" + 
+					 		 "TOTAL_START=" + df.format(0) + "\n" +
+					 		 "PREPROCESSING_START=" + df.format(0) + "\n" + // Add preprocessor times
+					 		 "PREPROCESSING_DONE=" + df.format(0) + "\n" + // Add preprocessor times
+					 		 "SEARCH_START=" + df.format(solver.getStartTime() / 1000.0 - programStartTime) + "\n" +
+					 		 "SEARCH_DONE=" + df.format(solver.getEndTime() / 1000.0 - programStartTime) + "\n" +
+					 		 "SOLUTION_TIME=" + df.format(((0 - 0) + (solver.getEndTime() - solver.getStartTime())) / 1000.0) + "\n" + // Add preprocessor times
+					 		 "STATUS=" + (solver.hasSolution() ? "success" : "timeout") + "\n" +
+					 		 "SOLUTION=" + (solver.hasSolution() ? sf.getSolutionTuple() : sf.getEmptyTuple()) + "\n" +
+					 		 "COUNT_NODES=" + solver.getNumAssignments() + "\n" +
+					 		 "COUNT_DEADENDS=" + solver.getNumBacktracks() + "\n" +
+					 		 "==============================\n";
 			
-			fileWriter.write(results);	
-			
+			fileWriter.write(results);				
 			fileWriter.flush();
 			fileWriter.close();
 		}	

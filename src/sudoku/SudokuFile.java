@@ -97,10 +97,12 @@ public class SudokuFile {
 		for (int i = 0; i < N; ++i)
 			for (int j = 0; j < N; ++j)
 			{
+				sb.append("\'");
 				sb.append(Odometer.intToOdometer(board[j][i])); // Need to find why these are reversed!
-				sb.append(",");
+				sb.append("\'");
+				sb.append(", ");
 			}
-		sb.setLength(sb.length() - 1);
+		sb.setLength(sb.length() - 2);
 		sb.append(")");
 		return sb.toString();
 	}
