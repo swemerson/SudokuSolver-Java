@@ -5,7 +5,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.FileReader;
-//import java.io.IOException;
 import java.io.Reader;
 import java.text.DecimalFormat;
 
@@ -21,57 +20,43 @@ public class handler {
 
 	public static void main(String[] args) throws IOException, NumberFormatException, InterruptedException 
 	{
-		long programStartTime = (System.currentTimeMillis() / 1000);
-		int count = args.length;
+		// Start program timer in seconds
+		long programStartTime = (System.currentTimeMillis() / 1000);		
 		
+		// Tokens
 		boolean genToken = false;
-		boolean btToken = false;
+		boolean fcToken = false;
 		
+		// Detect tokens
+		int count = args.length;
 		for (int i = 3; i < count; ++i)
 		{
 			switch ((args[i].toUpperCase()))
 			{
 			case "GEN":
 				genToken = true;
+				generateBoard(args[0], args[1]);
 				break;
-			case "BT":
-				btToken = true;
+			case "FC":
+				fcToken = true;				
 			}
-		}
+		}		
 		
-		if (genToken)
-		{
-			Reader reader = new FileReader(args[0]);
-			BufferedReader br = new BufferedReader(reader);
-			String line;
-			line = br.readLine();
-			String[] lineParts = line.split("\\s+");
-			int N = Integer.parseInt(lineParts[1]);
-			int p = Integer.parseInt(lineParts[2]);
-			int q = Integer.parseInt(lineParts[3]);
-			int numAssignments = Integer.parseInt(lineParts[0]);
-			
-			File outFile = new File(args[1]);
-			FileWriter fileWriter = new FileWriter(outFile);			
-			
-			SudokuFile generatedSF = SudokuBoardGenerator.generateBoard(N, p, q, numAssignments);
-			fileWriter.write((generatedSF.toString()));
-				
-		
-			fileWriter.flush();
-			fileWriter.close();
-			br.close();
-		}			
-		
-		if (btToken || !genToken)
+		// Run solver if GEN token not received
+		if (!genToken)
 		{
 			SudokuFile sf = SudokuBoardReader.readFile(args[0]);
 			BTSolver solver = new BTSolver(sf);
 			
-			solver.setConsistencyChecks(ConsistencyCheck.None);
+			// Set checks and heuristics based off tokens
+			if (fcToken)
+				solver.setConsistencyChecks(ConsistencyCheck.ForwardChecking);
+			else
+				solver.setConsistencyChecks(ConsistencyCheck.None);
 			solver.setValueSelectionHeuristic(ValueSelectionHeuristic.None);
 			solver.setVariableSelectionHeuristic(VariableSelectionHeuristic.None);
 			
+			// Create thread for solver and time it
 			Thread t1 = new Thread(solver);
 			t1.start();
 			t1.join(Long.valueOf(args[2]) * 1000);
@@ -80,10 +65,12 @@ public class handler {
 
 			sf = solver.getSolution();
 			
+			// Open output file for recording of results
 			File outFile = new File(args[1]);
 			FileWriter fileWriter = new FileWriter(outFile);	
 			
-			DecimalFormat df = new DecimalFormat("#.00"); 
+			// Record results
+			DecimalFormat df = new DecimalFormat("#0.00"); 
 			String results = "==============================\n" + 
 					 		 "TOTAL_START=" + df.format(0) + "\n" +
 					 		 "PREPROCESSING_START=" + df.format(0) + "\n" + // Add preprocessor times
@@ -97,9 +84,33 @@ public class handler {
 					 		 "COUNT_DEADENDS=" + solver.getNumBacktracks() + "\n" +
 					 		 "==============================\n";
 			
+			// Close out
 			fileWriter.write(results);				
 			fileWriter.flush();
 			fileWriter.close();
 		}	
+	}
+	
+	public static void generateBoard(String inFile, String outFile) throws IOException
+	{
+		Reader reader = new FileReader(inFile);
+		BufferedReader br = new BufferedReader(reader);
+		String line;
+		line = br.readLine();
+		String[] lineParts = line.split("\\s+");
+		int N = Integer.parseInt(lineParts[1]);
+		int p = Integer.parseInt(lineParts[2]);
+		int q = Integer.parseInt(lineParts[3]);
+		int numAssignments = Integer.parseInt(lineParts[0]);
+		
+		File outFileStream = new File(outFile);
+		FileWriter fileWriter = new FileWriter(outFileStream);			
+		
+		SudokuFile generatedSF = SudokuBoardGenerator.generateBoard(N, p, q, numAssignments);
+		fileWriter.write((generatedSF.toString()));
+			
+		fileWriter.flush();
+		fileWriter.close();
+		br.close();
 	}
 }
