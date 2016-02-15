@@ -175,7 +175,12 @@ public class BTSolver implements Runnable{
 	 */
 	private boolean forwardChecking()
 	{
-		return false;
+		for (Variable v : network.getVariables())
+			if (v.isAssigned())
+				for (Variable vOther : network.getNeighborsOfVariable(v))
+					vOther.removeValueFromDomain(v.getAssignment());
+		
+		return assignmentsCheck();
 	}
 	
 	/**
