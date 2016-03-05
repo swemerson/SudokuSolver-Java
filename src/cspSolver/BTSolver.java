@@ -178,7 +178,8 @@ public class BTSolver implements Runnable{
 		for (Variable v : network.getVariables())
 			if (v.isAssigned())
 				for (Variable vOther : network.getNeighborsOfVariable(v))
-					vOther.removeValueFromDomain(v.getAssignment());
+					if(vOther.Values().contains(v.getAssignment()))
+						vOther.removeValueFromDomain(v.getAssignment());
 		
 		return assignmentsCheck();
 	}
@@ -234,7 +235,23 @@ public class BTSolver implements Runnable{
 	 */
 	private Variable getMRV()
 	{
-		return null;
+		Variable minVar = null;
+		
+		for (Variable v : network.getVariables())
+		{
+			if(v.isAssigned() == false)
+			{
+				if(minVar == null)
+					minVar = v;
+				else
+				{
+					if(minVar.size() > v.size())
+						minVar = v;
+				}
+			}
+		}
+		
+		return minVar;
 	}
 	
 	/**
@@ -243,7 +260,23 @@ public class BTSolver implements Runnable{
 	 */
 	private Variable getDegree()
 	{
-		return null;
+		Variable degVar = null;
+		
+		for (Variable v : network.getVariables())
+		{
+			if(v.isAssigned() == false)
+			{
+				if(degVar == null)
+					degVar = v;
+				else
+				{
+					if(degVar.getDomain().size() > v.getDomain().size())
+						degVar = v;
+				}
+			}
+		}
+		
+		return degVar;
 	}
 	
 	/**
