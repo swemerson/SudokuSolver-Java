@@ -26,6 +26,9 @@ public class handler {
 		// Tokens
 		boolean genToken = false;
 		boolean fcToken = false;
+		boolean mrvToken = false;
+		boolean dhToken = false;
+		boolean lcvToken = false;
 		
 		// Detect tokens
 		int count = args.length;
@@ -35,10 +38,24 @@ public class handler {
 			{
 			case "GEN":
 				genToken = true;
+				System.out.println("Generate Board Selected...");
 				generateBoard(args[0], args[1]);
 				break;
 			case "FC":
-				fcToken = true;				
+				System.out.println("Forwarding Checking Selected...");
+				fcToken = true;	
+				break;
+			case "MRV":
+				System.out.println("Minimum Remaining Value Selected...");
+				mrvToken = true;
+				break;
+			case "DH":
+				System.out.println("Degree Heuristic Selected...");
+				dhToken = true;
+				break;
+			case "LCV":
+				System.out.println("Least Constraining Value Selected...");
+				lcvToken = true;
 			}
 		}		
 		
@@ -53,8 +70,19 @@ public class handler {
 				solver.setConsistencyChecks(ConsistencyCheck.ForwardChecking);
 			else
 				solver.setConsistencyChecks(ConsistencyCheck.None);
-			solver.setValueSelectionHeuristic(ValueSelectionHeuristic.None);
-			solver.setVariableSelectionHeuristic(VariableSelectionHeuristic.None);
+			
+			if (lcvToken)
+				solver.setValueSelectionHeuristic(ValueSelectionHeuristic.LeastConstrainingValue);
+			else
+				solver.setValueSelectionHeuristic(ValueSelectionHeuristic.None);
+			
+			if (mrvToken)
+				solver.setVariableSelectionHeuristic(VariableSelectionHeuristic.MinimumRemainingValue);
+			else
+				solver.setVariableSelectionHeuristic(VariableSelectionHeuristic.None);
+			
+			solver.setDegreeHeuristic(dhToken);
+			
 			
 			// Create thread for solver and time it
 			Thread t1 = new Thread(solver);

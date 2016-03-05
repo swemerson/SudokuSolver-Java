@@ -30,6 +30,7 @@ public class BTSolver implements Runnable{
 	public enum ConsistencyCheck				{ None, ForwardChecking, ArcConsistency };
 	
 	private VariableSelectionHeuristic varHeuristics;
+	private boolean degreeHeuristic;
 	private ValueSelectionHeuristic valHeuristics;
 	private ConsistencyCheck cChecks;
 	//===============================================================================
@@ -51,6 +52,11 @@ public class BTSolver implements Runnable{
 	public void setVariableSelectionHeuristic(VariableSelectionHeuristic vsh)
 	{
 		this.varHeuristics = vsh;
+	}
+	
+	public void setDegreeHeuristic(boolean b)
+	{
+		this.degreeHeuristic = b;
 	}
 	
 	public void setValueSelectionHeuristic(ValueSelectionHeuristic vsh)
@@ -245,7 +251,9 @@ public class BTSolver implements Runnable{
 					minVar = v;
 				else
 				{
-					if(minVar.size() > v.size())
+					if(degreeHeuristic && minVar.size() == v.size())
+						minVar = getDegree();
+					else if(minVar.size() > v.size())
 						minVar = v;
 				}
 			}
