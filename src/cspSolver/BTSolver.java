@@ -1,4 +1,5 @@
 package cspSolver;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -269,6 +270,7 @@ public class BTSolver implements Runnable{
 	private Variable getDegree()
 	{
 		Variable degVar = null;
+		int maxDegrees = 0;
 		int currentDegrees = 0;
 		
 		for (Variable v : network.getVariables())
@@ -276,7 +278,19 @@ public class BTSolver implements Runnable{
 			if(v.isAssigned() == false)
 			{
 				if(degVar == null)
+				{
 					degVar = v;
+					
+					for(Variable v2 : network.getNeighborsOfVariable(v))
+					{
+						if(v2.isAssigned() == false)
+						{
+							currentDegrees += 1;
+						}
+					}
+					
+					maxDegrees = currentDegrees;
+				}
 				else
 				{
 					for(Variable v2 : network.getNeighborsOfVariable(v))
@@ -286,8 +300,12 @@ public class BTSolver implements Runnable{
 							currentDegrees += 1;
 						}
 					}
-					if(currentDegrees > network.getNeighborsOfVariable(degVar).size())
+					
+					if(currentDegrees > maxDegrees)
+					{
 						degVar = v;
+						maxDegrees = currentDegrees;
+					}
 				}
 			}
 			
@@ -342,7 +360,11 @@ public class BTSolver implements Runnable{
 	 */
 	public List<Integer> getValuesLCVOrder(Variable v)
 	{
-		return null;
+		List<Integer> lcvOrder = v.Values();
+		List<Variable> neighbors = network.getNeighborsOfVariable(v);
+		
+		
+		return lcvOrder;
 	}
 	/**
 	 * Called when solver finds a solution
