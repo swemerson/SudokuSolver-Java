@@ -1,6 +1,7 @@
 package cspSolver;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -9,6 +10,8 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import sudoku.Converter;
 import sudoku.SudokuFile;
@@ -384,7 +387,7 @@ public class BTSolver implements Runnable{
 			}
 		}
 		
-		List list = new LinkedList(lcvMap.entrySet());
+		List<Set<Map.Entry<Integer, Integer>>> list = new LinkedList<Set<Map.Entry<Integer,Integer>>>((Collection<? extends Set<Entry<Integer, Integer>>>) lcvMap.entrySet());
 		Collections.sort(list, new Comparator() {
             public int compare(Object o1, Object o2) {
                return ((Comparable) ((Map.Entry) (o1)).getValue())
@@ -393,7 +396,7 @@ public class BTSolver implements Runnable{
        });
 		
 		for(Iterator it = list.iterator(); it.hasNext();){
-			Map.Entry entry = (Map.Entry)it.next(); 
+			Map.Entry<Integer,Integer> entry = (Map.Entry<Integer,Integer>)it.next(); 
 			lcvOrder.add((Integer) entry.getKey());
 		}
 		
