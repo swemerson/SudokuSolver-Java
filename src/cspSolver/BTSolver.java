@@ -392,7 +392,6 @@ public class BTSolver implements Runnable{
             }
        });
 		
-		int key = 0;
 		for(Iterator it = list.iterator(); it.hasNext();){
 			Map.Entry entry = (Map.Entry)it.next(); 
 			lcvOrder.add((Integer) entry.getKey());
