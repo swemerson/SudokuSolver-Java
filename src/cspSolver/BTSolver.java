@@ -366,7 +366,7 @@ public class BTSolver implements Runnable{
 	 */
 	public List<Integer> getValuesLCVOrder(Variable v)
 	{
-		List<Integer> lcvOrder = null;
+		List<Integer> lcvOrder = new ArrayList<Integer>();
 		List<Variable> neighbors = network.getNeighborsOfVariable(v);
 		
 		Map<Integer, Integer> lcvMap = new HashMap<Integer, Integer>();
@@ -384,13 +384,19 @@ public class BTSolver implements Runnable{
 			}
 		}
 		
-		lcvOrder = new LinkedList(lcvMap.entrySet());
-		Collections.sort(lcvOrder, new Comparator() {
+		List list = new LinkedList(lcvMap.entrySet());
+		Collections.sort(list, new Comparator() {
             public int compare(Object o1, Object o2) {
                return ((Comparable) ((Map.Entry) (o1)).getValue())
                   .compareTo(((Map.Entry) (o2)).getValue());
             }
        });
+		
+		int key = 0;
+		for(Iterator it = list.iterator(); it.hasNext();){
+			Map.Entry entry = (Map.Entry)it.next(); 
+			lcvOrder.add((Integer) entry.getKey());
+		}
 		
 		return lcvOrder;
 	}
