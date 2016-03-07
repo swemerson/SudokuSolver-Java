@@ -4,6 +4,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -381,8 +384,17 @@ public class BTSolver implements Runnable{
 			}
 		}
 		
+		lcvOrder = new LinkedList(lcvMap.entrySet());
+		Collections.sort(lcvOrder, new Comparator() {
+            public int compare(Object o1, Object o2) {
+               return ((Comparable) ((Map.Entry) (o1)).getValue())
+                  .compareTo(((Map.Entry) (o2)).getValue());
+            }
+       });
+		
 		return lcvOrder;
 	}
+	
 	/**
 	 * Called when solver finds a solution
 	 */
