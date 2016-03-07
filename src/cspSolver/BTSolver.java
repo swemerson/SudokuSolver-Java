@@ -1,8 +1,11 @@
 package cspSolver;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import sudoku.Converter;
 import sudoku.SudokuFile;
@@ -360,9 +363,23 @@ public class BTSolver implements Runnable{
 	 */
 	public List<Integer> getValuesLCVOrder(Variable v)
 	{
-		List<Integer> lcvOrder = v.Values();
+		List<Integer> lcvOrder = null;
 		List<Variable> neighbors = network.getNeighborsOfVariable(v);
 		
+		Map<Integer, Integer> lcvMap = new HashMap<Integer, Integer>();
+		for(Integer value: v.Values()) {
+			lcvMap.put(value, 0);
+		}
+		
+		for(Variable v2 : neighbors) {
+			if(v2.isAssigned() == false) {
+				for(Integer value : v2.Values()) {
+					if(lcvMap.containsValue(value)) {
+						lcvMap.put(value, lcvMap.get(value) + 1);
+					}
+				}
+			}
+		}
 		
 		return lcvOrder;
 	}
