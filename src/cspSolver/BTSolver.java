@@ -262,7 +262,7 @@ public class BTSolver implements Runnable{
 				else
 				{
 					if(degreeHeuristic && minVar.size() == v.size())
-						minVar = getDegree();
+						minVar = getDegree(minVar,v);
 					else if(minVar.size() > v.size())
 						minVar = v;
 				}
@@ -272,6 +272,25 @@ public class BTSolver implements Runnable{
 		return minVar;
 	}
 	
+	private Variable getDegree(Variable v1, Variable v2)
+	{
+		int v1Degrees = 0;
+		int v2Degrees = 0;
+		
+		for(Variable v : network.getNeighborsOfVariable(v1)){
+			if(v.isAssigned() == false){
+				v1Degrees += 1;
+			}
+		}
+		
+		for(Variable v : network.getNeighborsOfVariable(v2)){
+			if(v.isAssigned() == false){
+				v2Degrees += 1;
+			}
+		}
+		
+		return (v1Degrees > v2Degrees) ? v1 : v2;
+	}
 	/**
 	 * TODO: Implement Degree heuristic
 	 * @return variable constrained by the most unassigned variables, null if all variables are assigned.
@@ -282,36 +301,27 @@ public class BTSolver implements Runnable{
 		int maxDegrees = 0;
 		int currentDegrees = 0;
 		
-		for (Variable v : network.getVariables())
-		{
-			if(v.isAssigned() == false)
-			{
-				if(degVar == null)
-				{
+		for (Variable v : network.getVariables()) {
+			if(v.isAssigned() == false) {
+				if(degVar == null) {
 					degVar = v;
 					
-					for(Variable v2 : network.getNeighborsOfVariable(v))
-					{
-						if(v2.isAssigned() == false)
-						{
+					for(Variable v2 : network.getNeighborsOfVariable(v)){
+						if(v2.isAssigned() == false){
 							currentDegrees += 1;
 						}
 					}
 					
 					maxDegrees = currentDegrees;
 				}
-				else
-				{
-					for(Variable v2 : network.getNeighborsOfVariable(v))
-					{
-						if(v2.isAssigned() == false)
-						{
+				else {
+					for(Variable v2 : network.getNeighborsOfVariable(v)) {
+						if(v2.isAssigned() == false) {
 							currentDegrees += 1;
 						}
 					}
 					
-					if(currentDegrees > maxDegrees)
-					{
+					if(currentDegrees > maxDegrees) {
 						degVar = v;
 						maxDegrees = currentDegrees;
 					}
