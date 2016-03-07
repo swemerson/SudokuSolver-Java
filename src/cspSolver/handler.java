@@ -78,9 +78,12 @@ public class handler {
 			
 			if (mrvToken)
 				solver.setVariableSelectionHeuristic(VariableSelectionHeuristic.MinimumRemainingValue);
+			else if (!mrvToken && dhToken)
+				solver.setVariableSelectionHeuristic(VariableSelectionHeuristic.Degree);
 			else
 				solver.setVariableSelectionHeuristic(VariableSelectionHeuristic.None);
 			
+			// To be used with MRV for tie-breaking
 			solver.setDegreeHeuristic(dhToken);
 			
 			
