@@ -269,6 +269,7 @@ public class BTSolver implements Runnable{
 	private Variable getDegree()
 	{
 		Variable degVar = null;
+		int currentDegrees = 0;
 		
 		for (Variable v : network.getVariables())
 		{
@@ -278,10 +279,19 @@ public class BTSolver implements Runnable{
 					degVar = v;
 				else
 				{
-					if(degVar.getDomain().size() > v.getDomain().size())
+					for(Variable v2 : network.getNeighborsOfVariable(v))
+					{
+						if(v2.isAssigned() == false)
+						{
+							currentDegrees += 1;
+						}
+					}
+					if(currentDegrees > network.getNeighborsOfVariable(degVar).size())
 						degVar = v;
 				}
 			}
+			
+			currentDegrees = 0;
 		}
 		
 		return degVar;
